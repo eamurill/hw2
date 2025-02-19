@@ -41,8 +41,6 @@ public:
      * Reproduce the database file from the current Products and User values
      */
     virtual void dump(std::ostream& ofile) = 0;
-
-
 };
 
 #endif

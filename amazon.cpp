@@ -9,6 +9,7 @@
 #include "db_parser.h"
 #include "product_parser.h"
 #include "util.h"
+#include "mydatastore.h"
 
 using namespace std;
 struct ProdNameSorter {
@@ -29,8 +30,10 @@ int main(int argc, char* argv[])
      * Declare your derived DataStore object here replacing
      *  DataStore type to your derived type
      ****************/
-    DataStore ds;
-
+    myDataStore ds;
+    string username = "";
+    
+  
 
 
     // Instantiate the individual section and product parsers we want
@@ -99,11 +102,43 @@ int main(int argc, char* argv[])
                 }
                 done = true;
             }
-	    /* Add support for other commands here */
+      // Add support for other commands here */
+            else if(cmd == "ADD"){
+              ss >> username;
+              username = convToLower(username);
+              if(ss.fail()){
+                cout << "Invalid request" << endl;
+                continue;
+              }
+              size_t search_hit_number;
+              ss >> search_hit_number;
+              if(ss.fail() || hits.empty() || search_hit_number > hits.size() || search_hit_number <= 0){
+                cout << "Invalid request" << endl;
+                continue;
+              }
+              ds.addCart(username, hits[search_hit_number - 1]);
+            }
+      
+            else if(cmd == "VIEWCART"){
+              if(!(ss >> username)){
+                cout << "Invalid username " << endl;
+                continue;
+              }
+              else{
+                // username = convToLower(username);
+                ds.viewCart(username);
+              }
+              // if we don't put in username, check what they want us to do, do in main
+            }
+            else if(cmd == "BUYCART")
+            {
 
-
-
-
+              if(!(ss >> username)){
+                cout << "Invalid request" << endl;
+                continue;
+              }
+              ds.buyCart(username);
+            }
             else {
                 cout << "Unknown command" << endl;
             }
